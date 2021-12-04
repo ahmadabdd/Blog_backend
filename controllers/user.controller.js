@@ -1,3 +1,4 @@
+const process = require('process');
 const models = require('../models');
 const bcryptjs = require('bcryptjs');
 const Validator = require('fastest-validator');

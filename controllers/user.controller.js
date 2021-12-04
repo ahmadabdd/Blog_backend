@@ -1,5 +1,7 @@
 const models = require('../models');
 const bcryptjs = require('bcryptjs');
+const Validator = require('fastest-validator');
+
 const jwt = require('jsonwebtoken');
 
 function signUp(req, res) {
@@ -17,6 +19,22 @@ function signUp(req, res) {
                         email: req.body.email,
                         password: hash
                     }
+
+                    const schema = {
+                        name: {type: "string", optional: false, min: "5",max: "25"},
+                        email: {type: "email", optional: false},
+                        password: {type: "string", optional: false},
+                    }
+                
+                    const v = new Validator();
+                    const validationResponse = v.validate(user, schema);
+                
+                    if (validationResponse !== true) {
+                        return res.status(400).json({
+                            message: "Validation failed",
+                            error: validationResponse
+                        });
+                    }                
                 
                     models.User.create(user).then(result => {
                         res.status(200).json({
